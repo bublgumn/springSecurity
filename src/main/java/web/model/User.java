@@ -4,9 +4,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -20,8 +18,12 @@ public class User implements UserDetails {
 
     private String password;
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Role> role;
+    /*@OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)*/
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "user_role",
+    joinColumns = @JoinColumn(name = "users_id", referencedColumnName = "id"),
+    inverseJoinColumns = @JoinColumn(name = "roles_id", referencedColumnName = "id"))
+    private List<Role> role;
 
     public User() {
     }
@@ -31,13 +33,13 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public User(String username, String password, Set<Role> role) {
+    public User(String username, String password, List<Role> role) {
         this.username = username;
         this.password = password;
         this.role = role;
     }
 
-    public User(Long id, String username, String password, Set<Role> role) {
+    public User(Long id, String username, String password, List<Role> role) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -68,11 +70,11 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public Set<Role> getRole() {
+    public List<Role> getRole() {
         return role;
     }
 
-    public void setRole(Set<Role> role) {
+    public void setRole(List<Role> role) {
         this.role = role;
     }
 

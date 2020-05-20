@@ -3,6 +3,7 @@ package web.model;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "roles")
@@ -14,19 +15,18 @@ public class Role implements GrantedAuthority {
 
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User client;
+    @ManyToMany(mappedBy = "role" , cascade = CascadeType.ALL)
+    private List<User> client;
 
     public Role() {
     }
 
-    public Role(Long id, String name) {
-        this.id = id;
+    public Role(String name) {
         this.name = name;
     }
 
-    public Role(String name) {
+    public Role(Long id, String name) {
+        this.id = id;
         this.name = name;
     }
 
@@ -46,11 +46,11 @@ public class Role implements GrantedAuthority {
         this.name = name;
     }
 
-    public User getClient() {
+    public List<User> getClient() {
         return client;
     }
 
-    public void setClient(User client) {
+    public void setClient(List<User> client) {
         this.client = client;
     }
 

@@ -43,7 +43,7 @@
     <form action="/admin/newuser" method="post">
         <div><label> User Name : <input type="text" name="username"/> </label></div>
         <div><label> Password: <input type="text" name="password"/> </label></div>
-        <div><input type="checkbox" name="userparam" value="user"/></div>
+        <%--<div><input type="checkbox" name="userparam" value="user"/></div>--%>
         <div><input type="checkbox" name="adminparam" value="admin"/></div>
         <div><input type="submit" value="Create user."/></div>
     </form>

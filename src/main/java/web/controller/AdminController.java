@@ -7,8 +7,10 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import web.model.Role;
 import web.model.User;
+import web.service.RoleService;
 import web.service.UserService;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 @Controller
@@ -19,6 +21,9 @@ public class AdminController {
     @Autowired
     private UserService userServiceImpl;
 
+    @Autowired
+    private RoleService roleService;
+
     @GetMapping
     public String printCars(ModelMap model) {
         model.addAttribute("users", userServiceImpl.listUsers());
@@ -27,32 +32,23 @@ public class AdminController {
 
     @PostMapping("/newuser")
     public String createUser(@ModelAttribute User user,
-                             @RequestParam(required = false, name = "userparam") String userParam,
                              @RequestParam(required = false, name = "adminparam") String adminParam) {
-        Role roleUser = null;
-        Role roleAdmin = null;
+        Role roleUser;
+        Role roleAdmin;
 
         if (adminParam != null) {
-            roleAdmin = new Role("ROLE_admin");
-            roleAdmin.setClient(user);
-            roleUser = new Role("ROLE_user");
-            roleUser.setClient(user);
-        }
-
-        if (userParam != null && roleAdmin == null) {
-            roleUser = new Role("ROLE_user");
-            roleUser.setClient(user);
-        }
-
-        if (adminParam != null) {
-            user.setRole(new HashSet<>());
-            user.getRole().add(roleUser);
+            roleAdmin = roleService.findRoleByName("ROLE_admin");
+            roleUser = roleService.findRoleByName("ROLE_user");
+            user.setRole(new ArrayList<>());
             user.getRole().add(roleAdmin);
-        } else if (userParam != null) {
-            user.setRole(new HashSet<>());
             user.getRole().add(roleUser);
+            userServiceImpl.add(user);
+        } else {
+            roleUser = roleService.findRoleByName("ROLE_user");
+            user.setRole(new ArrayList<>());
+            user.getRole().add(roleUser);
+            userServiceImpl.add(user);
         }
-        userServiceImpl.add(user);
         return "redirect:/admin";
     }
 

@@ -8,6 +8,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import web.model.User;
+import web.service.RoleService;
 import web.service.UserService;
 
 import java.util.ArrayList;
@@ -17,8 +18,12 @@ import java.util.List;
 @RequestMapping("/user")
 @ComponentScan(value = "web")
 public class UserController {
+
     @Autowired
-    private UserService userServiceImpl;
+    private UserService userService;
+
+    @Autowired
+    private RoleService roleService;
 
     @GetMapping
     public String printWelcome(ModelMap model, Authentication authentication) {
